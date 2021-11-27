@@ -1,0 +1,76 @@
+<aura:component controller="SearchAccountController" implements="flexipage:availableForRecordHome,force:hasRecordId"
+    access="global">
+
+    <aura:attribute name="keywordHolder" type="string" />
+    <aura:attribute name="existRecords" type="Boolean" />
+
+    <aura:attribute name="start" type="Integer" />
+
+    <aura:attribute name="end" type="Integer" />
+    <aura:attribute name="accountList" type="Account[]" />
+    <aura:attribute name="paginationList" type="Account[]" />
+
+    <aura:attribute name="pageSize" type="Integer" default="5" />
+
+    <aura:attribute name="totalSize" type="Integer" />
+
+
+    <div class="slds-form_horizontal slds-form slds-grid slds-wrap">
+
+        <lightning:input name="AccountSearch" label="Name to search" value="{!v.keywordHolder}"
+            class="slds-size_1-of-2" />
+        <lightning:button label="Search" onclick="{!c.findAccount}" class="slds-size_1-of-8 slds-m-left_large" />
+
+    </div>
+
+
+    <aura:if isTrue="{!v.existRecords}">
+
+        <aura:iteration var="acc" items="{!v.paginationList}">
+            <lightning:recordViewForm recordId="{!acc.Id}" objectApiName="Account">
+                <div class="slds-box">
+                    <h1 class="slds-text-heading_small slds-p-bottom_x-small">Account info:</h1>
+                    <div class="flex">
+                        <lightning:outputField fieldName="Name" />
+                        <lightning:outputField fieldName="AnnualRevenue" />
+                        <lightning:outputField fieldName="NumberOfEmployees" />
+                        <lightning:outputField fieldName="Priority__c" />
+                    </div>
+
+                    <h1 class="slds-text-heading_small slds-p-bottom_x-small">Related contacts:</h1>
+                    <div class="flex">
+                        <aura:iteration var="con" items="{!acc.Contacts}">
+                            <lightning:recordViewForm recordId="{!con.Id}" objectApiName="Contact">
+                                <lightning:outputField fieldName="FirstName" />
+                                <lightning:outputField fieldName="LastName" />
+                                <lightning:outputField fieldName="Email" />
+                            </lightning:recordViewForm>
+
+
+                        </aura:iteration>
+                    </div>
+
+                </div>
+            </lightning:recordViewForm>
+
+        </aura:iteration>
+        <div class="slds-form_horizontal slds-form slds-grid slds-wrap slds-m-top_medium">
+            <lightning:input id='numRecords' value="{!v.pageSize}" class="slds-size_1-of-4" label="Page size"/>
+            <lightning:button label="Update size" class="slds-size_1-of-4 slds-m-left_large"
+                onclick="{!c.updatePagination}" />
+
+            <div class="slds-size_1-of-3 slds-m-left_large">
+
+                <lightning:button label="Prev." disabled="{!v.start == 0}" onclick="{!c.previous}" />
+
+                <lightning:button label="Next" disabled="{!v.end >= v.totalSize}" onclick="{!c.next}" />
+
+            </div>
+
+        </div>
+        <aura:set attribute="else">
+            <p id='mensajeError'>No hay registros</p>
+        </aura:set>
+    </aura:if>
+
+</aura:component>
