@@ -73,14 +73,14 @@ global with sharing class AccountEndPoint {
 
 
     private static void setPriorityAndAgent(Account account, List<Contact> contacts, User low, User med, User high){
-        if (account.AnnualRevenue < AccountHelper.LOW_ANNUAL_MAXVALUE){
+        if (account.AnnualRevenue <= AccountHelper.LOW_ANNUAL_MAXVALUE){
             account.Priority__c = AccountHelper.LOW_PRIORITY_VALUE;
             account.OwnerId = low.Id;
             for (Contact c : contacts){
                 c.OwnerId = low.Id;
             }
         }
-        else if (account.AnnualRevenue < AccountHelper.MED_ANNUAL_MAXVALUE) {
+        else if (account.AnnualRevenue <= AccountHelper.MED_ANNUAL_MAXVALUE) {
             account.Priority__c = AccountHelper.MED_PRIORITY_VALUE;
             account.OwnerId = med.Id;
             for (Contact c : contacts){
